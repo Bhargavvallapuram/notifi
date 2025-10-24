@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline Thought Notification</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+      background: white;
+      border-radius: 10px;
+      padding: 5px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #2b2b52;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #1b1b3b;
+    }
+
+    p {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💭 Thought Notification</h1>
+
+  <div class="input-area">
+    <input type="text" id="thoughtInput" placeholder="Type your thought...">
+    <button id="pushBtn">Push</button>
+  </div>
+
+  <p>Type your thought and push to see a browser notification.</p>
+
+  <script>
+    const button = document.getElementById('pushBtn');
+    const input = document.getElementById('thoughtInput');
+
+    // Ask permission only once
+    async function requestNotificationPermission() {
+      if ('Notification' in window) {
+        if (Notification.permission === 'default') {
+          const permission = await Notification.requestPermission();
+          console.log('Permission result:', permission);
+        } else {
+          console.log('Permission already:', Notification.permission);
+        }
+      } else {
+        alert("Your browser doesn't support notifications!");
+      }
+    }
+
+    // Send the notification
+    function sendThought() {
+      const text = input.value.trim();
+      if (!text) {
+        alert('Please enter a thought!');
+        return;
+      }
+
+      if (Notification.permission === 'granted') {
+        new Notification('💭 New Thought', {
+          body: text,
+          icon: 'https://cdn-icons-png.flaticon.com/512/2910/2910791.png',
+        });
+        console.log('Notification sent:', text);
+      } else {
+        alert('Please allow notification permission first!');
+      }
+
+      input.value = '';
+    }
+
+    // Attach events
+    button.addEventListener('click', sendThought);
+
+    // Request permission when the page first loads
+    requestNotificationPermission();
+  </script>
+
+</body>
+</html>
